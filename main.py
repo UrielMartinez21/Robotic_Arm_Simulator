@@ -4,7 +4,7 @@ import tkinter as tk
 from math import cos, sin
 
 # Cargar el modelo guardado
-model = tf.keras.models.load_model('robot_arm_model.h5')
+model = tf.keras.models.load_model('models/robot_arm_model.h5')
 
 # Función de cinemática inversa utilizando el modelo
 def inverse_kinematics(x, y):
