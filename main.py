@@ -13,23 +13,21 @@ def inverse_kinematics(x, y):
     theta2_vals = np.linspace(0, 2 * np.pi, 100)
     theta3_vals = np.linspace(0, 2 * np.pi, 100)
 
-    best_error = float('inf')
-    best_angles = None
+    theta1_grid, theta2_grid, theta3_grid = np.meshgrid(theta1_vals, theta2_vals, theta3_vals)
+    theta1_grid = theta1_grid.flatten()
+    theta2_grid = theta2_grid.flatten()
+    theta3_grid = theta3_grid.flatten()
 
-    for theta1 in theta1_vals:
-        for theta2 in theta2_vals:
-            for theta3 in theta3_vals:
-                # Calcular la posición (x', y') dado un conjunto de ángulos
-                x_pred = l1 * np.cos(theta1) + l2 * np.cos(theta1 + theta2) + l3 * np.cos(theta1 + theta2 + theta3)
-                y_pred = l1 * np.sin(theta1) + l2 * np.sin(theta1 + theta2) + l3 * np.sin(theta1 + theta2 + theta3)
+    # Calcular las posiciones (x', y') dados los conjuntos de ángulos
+    x_preds = l1 * np.cos(theta1_grid) + l2 * np.cos(theta1_grid + theta2_grid) + l3 * np.cos(theta1_grid + theta2_grid + theta3_grid)
+    y_preds = l1 * np.sin(theta1_grid) + l2 * np.sin(theta1_grid + theta2_grid) + l3 * np.sin(theta1_grid + theta2_grid + theta3_grid)
 
-                # Calcular el error entre (x', y') y (x, y)
-                error = np.sqrt((x - x_pred)**2 + (y - y_pred)**2)
+    # Calcular el error entre (x', y') y (x, y)
+    errors = np.sqrt((x - x_preds)**2 + (y - y_preds)**2)
 
-                # Actualizar los mejores ángulos si el error es menor
-                if error < best_error:
-                    best_error = error
-                    best_angles = (theta1, theta2, theta3)
+    # Encontrar el conjunto de ángulos con el menor error
+    min_error_index = np.argmin(errors)
+    best_angles = (theta1_grid[min_error_index], theta2_grid[min_error_index], theta3_grid[min_error_index])
 
     return best_angles
 
